@@ -1,0 +1,1 @@
+// Đây là nơi chứa Entity dùng cho mục đích FE gửi lên hoặc các Entitiy liên quan tới nghiệp vụ use-case
