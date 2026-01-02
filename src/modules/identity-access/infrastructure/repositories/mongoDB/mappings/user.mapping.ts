@@ -1,1 +1,1 @@
-// Mappings for User entity in MongoDB
+// User Mapping.ts
