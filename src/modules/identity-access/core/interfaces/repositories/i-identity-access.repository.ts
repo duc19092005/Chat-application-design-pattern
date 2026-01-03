@@ -1,1 +1,3 @@
-// Đây là các yêu cầu về repository dùng cho mục đích yêu cầu Database cần gì lấy gì
+interface IUserRepository {
+    findUserById(userId: string): Promise<string | null>;
+}

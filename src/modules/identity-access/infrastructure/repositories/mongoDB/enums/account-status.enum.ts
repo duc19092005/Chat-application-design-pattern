@@ -1,4 +1,4 @@
-export enum accountStatus{
+export enum accountStatusEnum{
     Active = "Active",
     Blocked = "Blocked"
 }
