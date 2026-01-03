@@ -27,71 +27,93 @@
 
 ## Cấu Trúc Dự Án
 
-Dự án này tuân theo kiến trúc mô-đun dựa trên nguyên tắc Domain-Driven Design (DDD). Dưới đây là tổng quan về cấu trúc dự án:
+Dự án này tuân theo kiến trúc mô-đun dựa trên nguyên tắc Domain-Driven Design (DDD) và Clean Architecture. Dưới đây là tổng quan về cấu trúc dự án:
 
 ```
-src/
-├── app.controller.spec.ts      # Các bài kiểm tra đơn vị cho controller chính của ứng dụng
-├── app.controller.ts           # Controller chính của ứng dụng
-├── app.module.ts               # Module gốc của ứng dụng
-├── app.service.ts              # Service chính của ứng dụng
-├── main.ts                     # Điểm vào của ứng dụng
-├── modules/
-│   └── identity-access/        # Module Quản Lý Danh Tính và Truy Cập
-│       ├── core/               # Logic nghiệp vụ cốt lõi
-│       │   ├── test.auth-service.ts    # Các bài kiểm tra cho service xác thực
-│       │   ├── dtos/           # Các đối tượng truyền dữ liệu (Data Transfer Objects)
-│       │   │   └── login-dto.ts        # DTO cho đăng nhập
-│       │   ├── entities/       # Các thực thể miền (Domain Entities)
-│       │   │   └── testEntity.ts       # Thực thể kiểm tra
-│       │   ├── interfaces/     # Các giao diện repository
-│       │   │   └── repositories/
-│       │   │       └── i-identity-access.repository.ts  # Giao diện repository cho identity-access
-│       │   └── use-cases/      # Các trường hợp sử dụng ứng dụng
-│       │       └── auth/
-│       │           └── login.use-case.ts  # Trường hợp sử dụng đăng nhập
-│       └── infrastructure/     # Lớp hạ tầng
-│           ├── http/           # Các thành phần liên quan đến HTTP
-│           │   ├── controllers/
-│           │   │   └── test.Controller.ts  # Controller kiểm tra
-│           │   └── middlewares/
-│           │       └── identity-access.middleware.ts  # Middleware cho identity-access
-│           ├── repositories/   # Triển khai repository
-│           │   └── mongoDB/
-│           │       ├── identity-access.respository.ts  # Repository cho identity-access sử dụng MongoDB
-│           │       ├── mappings/
-│           │       │   └── user.mapping.ts  # Ánh xạ cho người dùng
-│           │       └── Schemas/
-│           │           └── user.schema.ts  # Schema cho người dùng
-│           └── websocket/      # Các trình xử lý WebSocket
-│               ├── handlers/
-│               │   └── message-sender.handler.ts  # Trình xử lý gửi tin nhắn
-│               └── mappings/
-│                   └── join-room.mapping.ts  # Ánh xạ tham gia phòng
-└── shared/                     # Các tiện ích và cấu hình chia sẻ
-    └── config/
-        ├── mongoDB.config.ts   # Cấu hình MongoDB
-        └── webSocket.config.ts # Cấu hình WebSocket
-
-test/
-├── app.e2e-spec.ts             # Các bài kiểm tra end-to-end
-└── jest-e2e.json               # Cấu hình Jest cho e2e tests
+.
+├── eslint.config.mjs            # Cấu hình ESLint cho linting mã nguồn
+├── nest-cli.json                # Cấu hình NestJS CLI
+├── package.json                 # Quản lý dependencies và scripts của dự án
+├── README.md                    # Tài liệu mô tả dự án (file này)
+├── tsconfig.build.json          # Cấu hình TypeScript cho build
+├── tsconfig.json                # Cấu hình TypeScript chính
+├── src/                         # Thư mục nguồn chính
+│   ├── app.controller.spec.ts   # Các bài kiểm tra đơn vị cho controller chính của ứng dụng
+│   ├── app.controller.ts        # Controller chính của ứng dụng
+│   ├── app.module.ts            # Module gốc của ứng dụng
+│   ├── app.service.ts           # Service chính của ứng dụng
+│   ├── main.ts                  # Điểm vào của ứng dụng
+│   ├── modules/                 # Các module của ứng dụng
+│   │   ├── identity-access/     # Module Quản Lý Danh Tính và Truy Cập
+│   │   │   ├── README.md        # Tài liệu mô tả module identity-access
+│   │   │   ├── application/     # Lớp ứng dụng
+│   │   │   │   ├── dtos/        # Các đối tượng truyền dữ liệu (Data Transfer Objects)
+│   │   │   │   │   └── login-dto.ts        # DTO cho đăng nhập
+│   │   │   │   └── use-cases/   # Các trường hợp sử dụng ứng dụng
+│   │   │   │       └── auth/
+│   │   │   │           └── login.use-case.ts  # Trường hợp sử dụng đăng nhập
+│   │   │   ├── domain/          # Lớp miền
+│   │   │   │   ├── entities/    # Các thực thể miền (Domain Entities)
+│   │   │   │   │   ├── user-profile.entity.ts  # Thực thể hồ sơ người dùng
+│   │   │   │   │   └── user.entity.ts          # Thực thể người dùng
+│   │   │   │   ├── enums/       # Các enum miền
+│   │   │   │   │   ├── account-completion.enum.ts  # Enum trạng thái hoàn thành tài khoản
+│   │   │   │   │   ├── account-status.enum.ts      # Enum trạng thái tài khoản
+│   │   │   │   │   ├── login-method.enum.ts        # Enum phương thức đăng nhập
+│   │   │   │   │   └── user-role.enum.ts           # Enum vai trò người dùng
+│   │   │   │   └── repositories/  # Giao diện repository
+│   │   │   │       └── i-identity-access.repository.ts  # Giao diện repository cho identity-access
+│   │   │   ├── infrastructure/  # Lớp hạ tầng
+│   │   │   │   └── persistence/ # Lưu trữ dữ liệu
+│   │   │   │       └── mongoDB/
+│   │   │   │           ├── identity-access.respository.ts  # Triển khai repository cho identity-access sử dụng MongoDB
+│   │   │   │           ├── mappings/  # Ánh xạ dữ liệu
+│   │   │   │           │   └── user.mapping.ts             # Ánh xạ cho người dùng
+│   │   │   │           └── Schemas/  # Schema cơ sở dữ liệu
+│   │   │   │               ├── user-profile.schema.ts      # Schema hồ sơ người dùng
+│   │   │   │               └── user.schema.ts              # Schema người dùng
+│   │   │   └── presentation/     # Lớp trình bày
+│   │   │       ├── http/        # Xử lý HTTP
+│   │   │       │   ├── controllers/
+│   │   │       │   │   └── test.Controller.ts  # Controller kiểm tra
+│   │   │       │   └── middlewares/
+│   │   │       │       └── identity-access.middleware.ts  # Middleware cho identity-access
+│   │   │       └── websocket/   # Xử lý WebSocket
+│   │   │           ├── handlers/
+│   │   │           │   └── message-sender.handler.ts  # Trình xử lý gửi tin nhắn
+│   │   │           └── mappings/
+│   │   │               └── join-room.mapping.ts  # Ánh xạ tham gia phòng
+│   │   ├── user/                # Module Người Dùng (chưa triển khai)
+│   │   └── shared/              # Các tiện ích và cấu hình chia sẻ
+│   │       ├── config/          # Cấu hình
+│   │       │   ├── mongoDB.config.ts   # Cấu hình MongoDB
+│   │       │   └── webSocket.config.ts # Cấu hình WebSocket
+│   │       └── ultis/           # Tiện ích
+│   │           └── convert-enum.ulti.ts  # Tiện ích chuyển đổi enum
+│   └── test/                    # Thư mục test
+│       ├── app.e2e-spec.ts      # Các bài kiểm tra end-to-end
+│       └── jest-e2e.json        # Cấu hình Jest cho e2e tests
 ```
 
 ### Mô Tả Chi Tiết Các Module Chính:
 
 - **Module Identity-Access**: Xử lý xác thực, ủy quyền và quản lý người dùng.
-  - **Core (Lõi)**: Chứa logic nghiệp vụ, thực thể miền, trường hợp sử dụng và giao diện. Đây là nơi định nghĩa các quy tắc kinh doanh và hành vi của miền.
+  - **Application (Ứng Dụng)**: Chứa các trường hợp sử dụng (use-cases) và DTOs, định nghĩa các hành động mà hệ thống có thể thực hiện và cách dữ liệu được truyền.
     - `dtos/`: Chứa các DTO để truyền dữ liệu giữa các lớp, giúp tách biệt dữ liệu đầu vào/đầu ra.
-    - `entities/`: Các thực thể miền đại diện cho các đối tượng kinh doanh chính.
-    - `interfaces/`: Định nghĩa các giao diện cho repository, đảm bảo tách biệt giữa logic và triển khai.
     - `use-cases/`: Các trường hợp sử dụng ứng dụng, mô tả các hành động mà hệ thống có thể thực hiện.
+  - **Domain (Miền)**: Chứa logic nghiệp vụ cốt lõi, thực thể miền, enums và giao diện repository. Đây là nơi định nghĩa các quy tắc kinh doanh và hành vi của miền.
+    - `entities/`: Các thực thể miền đại diện cho các đối tượng kinh doanh chính.
+    - `enums/`: Các enum định nghĩa các giá trị cố định trong miền, như trạng thái tài khoản, vai trò người dùng.
+    - `repositories/`: Định nghĩa các giao diện cho repository, đảm bảo tách biệt giữa logic và triển khai.
   - **Infrastructure (Hạ Tầng)**: Triển khai các chi tiết kỹ thuật như lưu trữ dữ liệu, giao tiếp mạng và xử lý thời gian thực.
+    - `persistence/`: Xử lý lưu trữ dữ liệu, ở đây sử dụng MongoDB với schemas và mappings.
+  - **Presentation (Trình Bày)**: Xử lý giao diện người dùng và API.
     - `http/`: Xử lý các yêu cầu HTTP, bao gồm controllers để định tuyến và middlewares để xử lý trước/sau yêu cầu.
-    - `repositories/`: Triển khai cụ thể của repository, ở đây sử dụng MongoDB với mappings và schemas.
     - `websocket/`: Xử lý giao tiếp thời gian thực qua WebSocket, bao gồm handlers cho tin nhắn và mappings cho phòng.
 
 - **Shared (Chia Sẻ)**: Chứa các cấu hình và tiện ích dùng chung trên toàn bộ dự án, như cấu hình cơ sở dữ liệu và WebSocket, để tránh trùng lặp mã.
+
+- **Test**: Chứa các bài kiểm tra end-to-end và cấu hình Jest.
 
 ## Project setup
 
