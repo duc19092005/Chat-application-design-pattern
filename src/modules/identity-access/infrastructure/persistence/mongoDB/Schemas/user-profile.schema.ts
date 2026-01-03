@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { accountStatusEnum } from "../enums/account-status.enum";
-import { accountCompletionEnum } from "../enums/account-completion.enum";
+import { accountStatusEnum } from "../../../../domain/enums/account-status.enum";
+import { accountCompletionEnum } from "../../../../domain/enums/account-completion.enum";
 import { convertEnumToArray } from "src/shared/ultis/convert-enum.ulti";
 
 // Mặc định Flow như sau nếu đăng nhập bằng các Method trong loginMethodEnum

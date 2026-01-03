@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import { accountStatusEnum } from "../enums/account-status.enum";
-import { UserRoleEnum } from "../enums/user-role.enum";
+import { accountStatusEnum } from "../../../../domain/enums/account-status.enum";
+import { UserRoleEnum } from "../../../../domain/enums/user-role.enum";
 import { convertEnumToArray } from "src/shared/ultis/convert-enum.ulti";
-import { loginMethodEnum } from "../enums/login-method.enum";
+import { loginMethodEnum } from "../../../../domain/enums/login-method.enum";
 
 const userSchema = new mongoose.Schema({
     username : { type: String, required: true },
