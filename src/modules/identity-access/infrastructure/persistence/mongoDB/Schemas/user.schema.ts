@@ -7,8 +7,9 @@ import { loginMethodEnum } from "../../../../domain/enums/login-method.enum";
 const userSchema = new mongoose.Schema({
     username : { type: String, required: true },
     email : { type: String, required: true },
-    password : { type: String, required: true },
+    password : { type: String, required: false },
     role : { type: convertEnumToArray(UserRoleEnum), required: true },
+    subId : { type: String , default: null },
     refreshToken : { type: String , default: null },
     loginMethod : { type: convertEnumToArray(loginMethodEnum), required: true },
     createdAt : { type: Date, default: Date.now },
