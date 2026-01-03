@@ -43,8 +43,9 @@ Dự án này tuân theo kiến trúc mô-đun dựa trên nguyên tắc Domain-
 │   ├── app.module.ts            # Module gốc của ứng dụng
 │   ├── app.service.ts           # Service chính của ứng dụng
 │   ├── main.ts                  # Điểm vào của ứng dụng
-│   ├── modules/
+│   ├── modules/                 # Các module của ứng dụng
 │   │   ├── identity-access/     # Module Quản Lý Danh Tính và Truy Cập
+│   │   │   ├── README.md        # Tài liệu mô tả module identity-access
 │   │   │   ├── application/     # Lớp ứng dụng
 │   │   │   │   ├── dtos/        # Các đối tượng truyền dữ liệu (Data Transfer Objects)
 │   │   │   │   │   └── login-dto.ts        # DTO cho đăng nhập
@@ -55,17 +56,17 @@ Dự án này tuân theo kiến trúc mô-đun dựa trên nguyên tắc Domain-
 │   │   │   │   ├── entities/    # Các thực thể miền (Domain Entities)
 │   │   │   │   │   ├── user-profile.entity.ts  # Thực thể hồ sơ người dùng
 │   │   │   │   │   └── user.entity.ts          # Thực thể người dùng
+│   │   │   │   ├── enums/       # Các enum miền
+│   │   │   │   │   ├── account-completion.enum.ts  # Enum trạng thái hoàn thành tài khoản
+│   │   │   │   │   ├── account-status.enum.ts      # Enum trạng thái tài khoản
+│   │   │   │   │   ├── login-method.enum.ts        # Enum phương thức đăng nhập
+│   │   │   │   │   └── user-role.enum.ts           # Enum vai trò người dùng
 │   │   │   │   └── repositories/  # Giao diện repository
 │   │   │   │       └── i-identity-access.repository.ts  # Giao diện repository cho identity-access
 │   │   │   ├── infrastructure/  # Lớp hạ tầng
 │   │   │   │   └── persistence/ # Lưu trữ dữ liệu
 │   │   │   │       └── mongoDB/
 │   │   │   │           ├── identity-access.respository.ts  # Triển khai repository cho identity-access sử dụng MongoDB
-│   │   │   │           ├── enums/  # Các enum liên quan
-│   │   │   │           │   ├── account-completion.enum.ts  # Enum trạng thái hoàn thành tài khoản
-│   │   │   │           │   ├── account-status.enum.ts      # Enum trạng thái tài khoản
-│   │   │   │           │   ├── login-method.enum.ts        # Enum phương thức đăng nhập
-│   │   │   │           │   └── user-role.enum.ts           # Enum vai trò người dùng
 │   │   │   │           ├── mappings/  # Ánh xạ dữ liệu
 │   │   │   │           │   └── user.mapping.ts             # Ánh xạ cho người dùng
 │   │   │   │           └── Schemas/  # Schema cơ sở dữ liệu
@@ -89,7 +90,7 @@ Dự án này tuân theo kiến trúc mô-đun dựa trên nguyên tắc Domain-
 │   │       │   └── webSocket.config.ts # Cấu hình WebSocket
 │   │       └── ultis/           # Tiện ích
 │   │           └── convert-enum.ulti.ts  # Tiện ích chuyển đổi enum
-│   └── test/
+│   └── test/                    # Thư mục test
 │       ├── app.e2e-spec.ts      # Các bài kiểm tra end-to-end
 │       └── jest-e2e.json        # Cấu hình Jest cho e2e tests
 ```
@@ -100,11 +101,12 @@ Dự án này tuân theo kiến trúc mô-đun dựa trên nguyên tắc Domain-
   - **Application (Ứng Dụng)**: Chứa các trường hợp sử dụng (use-cases) và DTOs, định nghĩa các hành động mà hệ thống có thể thực hiện và cách dữ liệu được truyền.
     - `dtos/`: Chứa các DTO để truyền dữ liệu giữa các lớp, giúp tách biệt dữ liệu đầu vào/đầu ra.
     - `use-cases/`: Các trường hợp sử dụng ứng dụng, mô tả các hành động mà hệ thống có thể thực hiện.
-  - **Domain (Miền)**: Chứa logic nghiệp vụ cốt lõi, thực thể miền và giao diện repository. Đây là nơi định nghĩa các quy tắc kinh doanh và hành vi của miền.
+  - **Domain (Miền)**: Chứa logic nghiệp vụ cốt lõi, thực thể miền, enums và giao diện repository. Đây là nơi định nghĩa các quy tắc kinh doanh và hành vi của miền.
     - `entities/`: Các thực thể miền đại diện cho các đối tượng kinh doanh chính.
+    - `enums/`: Các enum định nghĩa các giá trị cố định trong miền, như trạng thái tài khoản, vai trò người dùng.
     - `repositories/`: Định nghĩa các giao diện cho repository, đảm bảo tách biệt giữa logic và triển khai.
   - **Infrastructure (Hạ Tầng)**: Triển khai các chi tiết kỹ thuật như lưu trữ dữ liệu, giao tiếp mạng và xử lý thời gian thực.
-    - `persistence/`: Xử lý lưu trữ dữ liệu, ở đây sử dụng MongoDB với schemas, mappings và enums.
+    - `persistence/`: Xử lý lưu trữ dữ liệu, ở đây sử dụng MongoDB với schemas và mappings.
   - **Presentation (Trình Bày)**: Xử lý giao diện người dùng và API.
     - `http/`: Xử lý các yêu cầu HTTP, bao gồm controllers để định tuyến và middlewares để xử lý trước/sau yêu cầu.
     - `websocket/`: Xử lý giao tiếp thời gian thực qua WebSocket, bao gồm handlers cho tin nhắn và mappings cho phòng.
