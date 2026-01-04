@@ -58,6 +58,7 @@ export class userEntity {
 
     // Áp dụng dụng Entites này dùng để thêm xóa sửa luôn
     // Này là xem data
+    
     public static fromPersistence(props: IUserEntity): userEntity {
         return new userEntity(props);
     }

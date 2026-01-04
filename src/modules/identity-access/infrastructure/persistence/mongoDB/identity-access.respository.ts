@@ -4,8 +4,7 @@ import { IUserRepository } from "../../../domain/repositories/i-identity-access.
 import { IUserEntity, userEntity } from "../../../domain/entities/user.entity";
 import { UserProfileModel } from "./schemas/user-profile.schema";
 import { UserModel } from "./schemas/user.schema";
-import { BCryptProvider } from "../provider/bcrypt-provider";
-import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { IUserProfile } from "src/modules/identity-access/domain/entities/user-profile.entity";
 import { IUserProfilePersistence } from "./interfaces/i-user-profile.interface";
 import { userProfileMapping } from "./mappings/user-profile.mapping";
@@ -15,10 +14,15 @@ import { loginMethodEnum } from "src/modules/identity-access/domain/enums/login-
 import { UserRoleEnum } from "src/modules/identity-access/domain/enums/user-role.enum";
 import { accountStatusEnum } from "src/modules/identity-access/domain/enums/account-status.enum";
 import { userProfileEntity } from "src/modules/identity-access/domain/entities/user-profile.entity";
-
-
+import type { IBcyptProvider } from "src/modules/identity-access/domain/interfaces/bcrypt-provider-interface";
 
 export class identityAccessRepository implements IUserRepository {
+    constructor(
+        @Inject('IBcyptProvider')
+        private readonly bcryptProvider: IBcyptProvider
+    ){
+        
+    }
      // Tìm Không User bằng Id
     public async findUserById(userId: string): Promise<userEntity | null>{
         return null;
@@ -36,7 +40,7 @@ export class identityAccessRepository implements IUserRepository {
             throw new UnauthorizedException("Can't Find User")
         }
 
-        const verifyPassword = BCryptProvider.verifyPassword(password , findUser.password)
+        const verifyPassword = await this.bcryptProvider.verifyPassword(password , findUser.password)
 
         if(!verifyPassword)
         {

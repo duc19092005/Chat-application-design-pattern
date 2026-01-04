@@ -1,33 +1,18 @@
 import bcrypt from "bcrypt"
 import { error } from "console"
-
+import {IBcyptProvider} from "../../../domain/interfaces/bcrypt-provider-interface"
+import { Injectable } from "@nestjs/common";
 const saltRounds = 10
 
-export class BCryptProvider{
-    public static genHashPassword(password : string) : string{
-        var passwordHash = ""
-        bcrypt.hash(password, saltRounds, function(err, hash) {
-            if(err)
-            {
-                console.error("Hash Error - Details Error : " + err?.message)
-                throw new Error("Password Hash Error")
-            }else{
-                passwordHash = hash
-            }
-        })
-        return passwordHash
+@Injectable()
+export class BCryptProvider implements IBcyptProvider{
+    private readonly saltRounds = 10;
+
+    async genHashPassword(password: string): Promise<string> {
+        return bcrypt.hash(password, this.saltRounds);
     }
 
-    public static verifyPassword(inputPassword : string , hashPassword : string) : boolean
-    {
-        bcrypt.compare(inputPassword, hashPassword, function(err, result) {
-            if(err)
-            {
-                return false
-            }else{
-                return true
-            }
-        });
-        return false
+    async verifyPassword(password: string, hash: string): Promise<boolean> {
+        return bcrypt.compare(password, hash);
     }
 }
