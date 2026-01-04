@@ -8,7 +8,6 @@ import { BCryptProvider } from "../provider/bcrypt-provider";
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { IUserProfile } from "src/modules/identity-access/domain/entities/user-profile.entity";
 import { IUserProfilePersistence } from "./interfaces/i-user-profile.interface";
-import { profileCompletionEnum } from "src/modules/identity-access/domain/enums/account-completion.enum";
 import { userProfileMapping } from "./mappings/user-profile.mapping";
 
 
