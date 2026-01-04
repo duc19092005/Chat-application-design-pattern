@@ -16,6 +16,7 @@ import { accountStatusEnum } from "src/modules/identity-access/domain/enums/acco
 import { userProfileEntity } from "src/modules/identity-access/domain/entities/user-profile.entity";
 import type { IBcyptProvider } from "src/modules/identity-access/domain/interfaces/bcrypt-provider-interface";
 
+@Injectable()
 export class identityAccessRepository implements IUserRepository {
     constructor(
         @Inject('IBcyptProvider')
