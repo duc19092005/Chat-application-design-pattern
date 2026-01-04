@@ -1,4 +1,4 @@
-export enum accountCompletionEnum {
+export enum profileCompletionEnum {
     Complete = "Complete",
     Incomplete = "Incomplete"
 }

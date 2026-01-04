@@ -5,7 +5,6 @@ import { convertEnumToArray } from "src/shared/ultis/convert-enum.ulti";
 import { loginMethodEnum } from "../../../../domain/enums/login-method.enum";
 
 const userSchema = new mongoose.Schema({
-    username : { type: String, required: true },
     email : { type: String, required: true },
     password : { type: String, required: false },
     role : { type: convertEnumToArray(UserRoleEnum), required: true },
