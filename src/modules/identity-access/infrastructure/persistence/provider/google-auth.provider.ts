@@ -9,7 +9,7 @@ export class googleAuthProvider implements ISocialProvider {
     async getUserProfile(authorzationToken: string): Promise<ISocialProfile> {
         // Flow như này trước tiên fe gửi cái này lên sau đó mình sẽ gọi google api để lấy accessToken
         // Sau đó dùng accessToken để lấy thông tin người dùng từ google
-        // Trước hết kiểm tra xem clientID có đc mã hóa chưa
+        // Trước hết kiểm tra xem clientID có đc chưa
         var clientId = process.env?.GOOGLE_CLIENT_ID;
         var googleRedirectURI = process.env?.GOOGLE_REDIRECT_URI;
         const params = new URLSearchParams();
@@ -34,7 +34,7 @@ export class googleAuthProvider implements ISocialProvider {
         const accessToken = response.data.access_token;
         
         const profileResponse = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo",{
-
+            
         });
 
         const profileData = profileResponse.data;
@@ -50,6 +50,7 @@ export class googleAuthProvider implements ISocialProvider {
             fullName: profileData.name,
             avatarUrl: profileData.picture,
         };        
+        return socialProfile;
     }
 
     private async verifyTokenId(token: string, clientId: string) {
