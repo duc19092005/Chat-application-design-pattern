@@ -1,2 +1,6 @@
-import { Request , Response , Next } from "@nestjs/common";
+import { Request , Response } from "@nestjs/common";
+import { NextFunction } from "express";
 
+const ErrorMiddleware = (req: Request, res: Response, next: NextFunction) => {
+
+}
