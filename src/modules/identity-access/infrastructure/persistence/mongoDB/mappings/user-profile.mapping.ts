@@ -1,11 +1,11 @@
 import { create } from "axios";
-import { IUserProfile } from "src/modules/identity-access/domain/entities/user-profile.entity";
+import { IUserProfile, userProfileEntity } from "src/modules/identity-access/domain/entities/user-profile.entity";
 import { IUserProfilePersistence } from "../interfaces/i-user-profile.interface";
 
 export class userProfileMapping{
     public static ToEntities(
         userProfilePersistence : IUserProfilePersistence
-    ) : IUserProfile{
+    ) : userProfileEntity{
         const userProfile : IUserProfile= {
             userId : userProfilePersistence.userId.toString(),
             username : userProfilePersistence.username,
@@ -23,7 +23,7 @@ export class userProfileMapping{
                 completedFields: userProfilePersistence.profileStatus.completedFields || []
             }
         }       
-        return userProfile
+        return new userProfileEntity(userProfile)
     }
 
     public static ToPersistence(
@@ -42,6 +42,6 @@ export class userProfileMapping{
             profileStatus : userProfile.profileStatus
 
         }       
-        return userProfile
+        return userProfilePersistence
     }
 }

@@ -27,6 +27,9 @@ export class userProfileEntity {
         this.props = props;
         this.refreshProfileStatus()
     }
+    public getUserProfile() : IUserProfile{
+        return this.props
+    }
     public getUsername() : string {
         return this.props.username;
     }
@@ -80,7 +83,7 @@ export class userProfileEntity {
         this.props.profileStatus.completedPercentage = completedPercentage
         this.props.profileStatus.uncompletedFields = uncompletedFields
         this.props.profileStatus.completedFields = completedFields
-        if(completedPercentage == 1)
+        if(completedPercentage == 100)
         {
             this.props.profileStatus.profileCompletionStatus = profileCompletionEnum.Complete
         }else{

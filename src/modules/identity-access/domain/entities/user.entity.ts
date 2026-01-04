@@ -4,7 +4,10 @@ import { loginMethodEnum } from "../enums/login-method.enum";
 import { userProfileEntity , IUserProfile } from "./user-profile.entity";
 import { ILoginResponseDto } from "../../application/dtos/login.dto";
 
-interface IUserEntity {
+export interface IUserCreateEntity {
+
+}
+export interface IUserEntity {
     userId: string;
     password?: string;
     email: string;
@@ -15,13 +18,18 @@ interface IUserEntity {
     createdAt: Date;
     updatedAt: Date;
     accountStatus: accountStatusEnum;
-    userProfile : userProfileEntity
+    userProfile : IUserProfile
 }
+
 export class userEntity {
 
     private properties: IUserEntity;
+    private profile : userProfileEntity;
 
-    constructor(userEntity : IUserEntity
+    // Static Factory Method
+
+    private constructor(
+        userEntity : IUserEntity
     ) {
         // if (!userEntityValidate.validateUserName(username)) {
         //     // Tạm thời throw Error, sau này có thể custom lỗi
@@ -45,14 +53,44 @@ export class userEntity {
             throw new Error("Invalid account status");
         }
         this.properties = userEntity
+        this.profile = new userProfileEntity(userEntity.userProfile)
     }
 
-    public getprofile(): userProfileEntity {
-        return this.properties.userProfile;
+    // Áp dụng dụng Entites này dùng để thêm xóa sửa luôn
+    // Này là xem data
+    public static fromPersistence(props: IUserEntity): userEntity {
+        return new userEntity(props);
     }
+
+    public toPersistence() :  any {
+        const { userId, ...rest } = this.properties;
+
+        return {
+            ...(userId ? {_id : userId} : {}) ,
+            ...rest,
+            userProfile : this.properties.userProfile
+        }
+    }
+
+    // Này là để thêm xóa sửa data
+    // Thêm data allow 
+    public static createNewUserRegularMethod(property :
+        Omit<IUserEntity , 'userId' | 'createdAt' | 'updatedAt'>
+    ) : userEntity{
+        const entityProps : IUserEntity = {
+            ... property ,
+            userId : '' ,
+            createdAt : new Date() ,
+            updatedAt : new Date()
+        }
+        return new userEntity(entityProps)
+    }
+
+
+
 
     public getuserInfo() : ILoginResponseDto {
-        const p = this.getprofile(); 
+        const p = this.profile; 
         const status = p.getProfileStatus(); 
 
         return {

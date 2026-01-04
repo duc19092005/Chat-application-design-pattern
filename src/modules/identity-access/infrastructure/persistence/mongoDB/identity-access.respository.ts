@@ -1,7 +1,7 @@
 // Repository for identity and access management using MongoDB
 
 import { IUserRepository } from "../../../domain/repositories/i-identity-access.repository";
-import { userEntity } from "../../../domain/entities/user.entity";
+import { IUserEntity, userEntity } from "../../../domain/entities/user.entity";
 import { UserProfileModel } from "./schemas/user-profile.schema";
 import { UserModel } from "./schemas/user.schema";
 import { BCryptProvider } from "../provider/bcrypt-provider";
@@ -9,6 +9,12 @@ import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { IUserProfile } from "src/modules/identity-access/domain/entities/user-profile.entity";
 import { IUserProfilePersistence } from "./interfaces/i-user-profile.interface";
 import { userProfileMapping } from "./mappings/user-profile.mapping";
+import { userMapping } from "./mappings/user.mapping";
+import { IUserPersistence } from "./interfaces/i-user-interface";
+import { loginMethodEnum } from "src/modules/identity-access/domain/enums/login-method.enum";
+import { UserRoleEnum } from "src/modules/identity-access/domain/enums/user-role.enum";
+import { accountStatusEnum } from "src/modules/identity-access/domain/enums/account-status.enum";
+import { userProfileEntity } from "src/modules/identity-access/domain/entities/user-profile.entity";
 
 
 
@@ -18,7 +24,7 @@ export class identityAccessRepository implements IUserRepository {
         return null;
     }
     // Tìm kiếm người dùng bằng username và password
-    public async findUserByUsernameAndPassword(username: string, password: string): Promise<string | null>{
+    public async findUserByUsernameAndPassword(username: string, password: string): Promise<userEntity>{
         // Truy Vấn database
         const findUser = await UserModel.findOne({
             username : username
@@ -30,22 +36,36 @@ export class identityAccessRepository implements IUserRepository {
             throw new UnauthorizedException("Can't Find User")
         }
 
-
         const verifyPassword = BCryptProvider.verifyPassword(password , findUser.password)
 
         if(!verifyPassword)
         {
             throw new UnauthorizedException("Can't Find User")
         }
-        console.log("ABC")
-        return null
+        
+        const userProfile = await this.findUserProfileByUserId(findUser.id)
+
+        const userPersistence : IUserPersistence = {
+            userId : findUser.id ,
+            email : findUser.email ,
+            refreshToken : findUser.refreshToken ?? undefined ,
+            loginMethod : findUser.loginMethod as loginMethodEnum,
+            subId : findUser.subId ?? undefined ,
+            role : findUser.role as UserRoleEnum ,
+            createdAt : findUser.createdAt ,
+            updatedAt : findUser.updatedAt ,
+            accountStatus : findUser.accountStatus as accountStatusEnum ,
+            userProfile : userProfile.getUserProfile(),
+        }
+
+        return userMapping.ToEntities(userPersistence)
+        // Convert And Return for user
     }
 
-    public async findUserProfileByUserId(userId : string) : Promise<IUserProfile>{
+    public async findUserProfileByUserId(userId : string) : Promise<userProfileEntity>{
         const userProfile = await UserProfileModel.findOne({
             userId : userId
         })
-
         if(!userProfile)
         {
             throw new NotFoundException("Can't Not Find User Profile Information")
