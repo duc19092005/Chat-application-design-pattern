@@ -7,13 +7,13 @@ import { loginMethodEnum } from "../../../../domain/enums/login-method.enum";
 const userSchema = new mongoose.Schema({
     email : { type: String, required: true },
     password : { type: String, required: false },
-    role : { type: convertEnumToArray(UserRoleEnum), required: true },
-    subId : { type: String , default: null },
-    refreshToken : { type: String , default: null },
-    loginMethod : { type: convertEnumToArray(loginMethodEnum), required: true },
+    role : { type: String , enum : convertEnumToArray(UserRoleEnum), required: true },
+    subId : { type: String , default: null, required: false },
+    refreshToken : { type: String , default: null , required: false},
+    loginMethod : { type: String , enum : convertEnumToArray(UserRoleEnum), required: true },
     createdAt : { type: Date, default: Date.now },
     updatedAt : { type: Date, default: Date.now },
-    accountStatus : { type: convertEnumToArray(accountStatusEnum), required: true },
+    accountStatus : { type: String , enum : convertEnumToArray(UserRoleEnum), required: true },
 });
 
 export const UserModel = mongoose.model('User', userSchema);

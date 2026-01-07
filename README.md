@@ -61,15 +61,27 @@ Dự án này tuân theo kiến trúc mô-đun dựa trên nguyên tắc Domain-
 │   │   │   │   │   ├── account-status.enum.ts      # Enum trạng thái tài khoản
 │   │   │   │   │   ├── login-method.enum.ts        # Enum phương thức đăng nhập
 │   │   │   │   │   └── user-role.enum.ts           # Enum vai trò người dùng
+│   │   │   │   ├── interfaces/  # Giao diện miền
+│   │   │   │   │   ├── oauth2-provider-interface.ts  # Giao diện nhà cung cấp OAuth2
+│   │   │   │   │   └── register-provider-interface.ts # Giao diện nhà cung cấp đăng ký
 │   │   │   │   └── repositories/  # Giao diện repository
 │   │   │   │       └── i-identity-access.repository.ts  # Giao diện repository cho identity-access
 │   │   │   ├── infrastructure/  # Lớp hạ tầng
 │   │   │   │   └── persistence/ # Lưu trữ dữ liệu
 │   │   │   │       └── mongoDB/
 │   │   │   │           ├── identity-access.respository.ts  # Triển khai repository cho identity-access sử dụng MongoDB
+│   │   │   │           ├── interfaces/  # Giao diện persistence
+│   │   │   │           │   ├── i-create-user-interface.ts  # Giao diện tạo người dùng
+│   │   │   │           │   ├── i-user-interface.ts         # Giao diện người dùng
+│   │   │   │           │   └── i-user-profile.interface.ts  # Giao diện hồ sơ người dùng
 │   │   │   │           ├── mappings/  # Ánh xạ dữ liệu
-│   │   │   │           │   └── user.mapping.ts             # Ánh xạ cho người dùng
-│   │   │   │           └── Schemas/  # Schema cơ sở dữ liệu
+│   │   │   │           │   ├── user-profile.mapping.ts     # Ánh xạ hồ sơ người dùng
+│   │   │   │           │   └── user.mapping.ts             # Ánh xạ người dùng
+│   │   │   │           ├── provider/  # Nhà cung cấp dịch vụ
+│   │   │   │           │   ├── bcrypt-provider.ts          # Nhà cung cấp mã hóa bcrypt
+│   │   │   │           │   ├── facebook-auth.provider.ts   # Nhà cung cấp xác thực Facebook
+│   │   │   │           │   └── google-auth.provider.ts     # Nhà cung cấp xác thực Google
+│   │   │   │           └── schemas/  # Schema cơ sở dữ liệu
 │   │   │   │               ├── user-profile.schema.ts      # Schema hồ sơ người dùng
 │   │   │   │               └── user.schema.ts              # Schema người dùng
 │   │   │   └── presentation/     # Lớp trình bày
@@ -85,9 +97,12 @@ Dự án này tuân theo kiến trúc mô-đun dựa trên nguyên tắc Domain-
 │   │   │               └── join-room.mapping.ts  # Ánh xạ tham gia phòng
 │   │   ├── user/                # Module Người Dùng (chưa triển khai)
 │   │   └── shared/              # Các tiện ích và cấu hình chia sẻ
+│   │       ├── baseResDTOs/     # Các DTO phản hồi cơ sở
+│   │       │   └── baseResDTO.ts # DTO phản hồi cơ sở
 │   │       ├── config/          # Cấu hình
 │   │       │   ├── mongoDB.config.ts   # Cấu hình MongoDB
 │   │       │   └── webSocket.config.ts # Cấu hình WebSocket
+│   │       ├── interfaces/      # Giao diện chia sẻ (chưa triển khai)
 │   │       └── ultis/           # Tiện ích
 │   │           └── convert-enum.ulti.ts  # Tiện ích chuyển đổi enum
 │   └── test/                    # Thư mục test
@@ -104,14 +119,16 @@ Dự án này tuân theo kiến trúc mô-đun dựa trên nguyên tắc Domain-
   - **Domain (Miền)**: Chứa logic nghiệp vụ cốt lõi, thực thể miền, enums và giao diện repository. Đây là nơi định nghĩa các quy tắc kinh doanh và hành vi của miền.
     - `entities/`: Các thực thể miền đại diện cho các đối tượng kinh doanh chính.
     - `enums/`: Các enum định nghĩa các giá trị cố định trong miền, như trạng thái tài khoản, vai trò người dùng.
+    - `interfaces/`: Các giao diện định nghĩa các hợp đồng cho các nhà cung cấp dịch vụ bên ngoài như OAuth2.
     - `repositories/`: Định nghĩa các giao diện cho repository, đảm bảo tách biệt giữa logic và triển khai.
   - **Infrastructure (Hạ Tầng)**: Triển khai các chi tiết kỹ thuật như lưu trữ dữ liệu, giao tiếp mạng và xử lý thời gian thực.
-    - `persistence/`: Xử lý lưu trữ dữ liệu, ở đây sử dụng MongoDB với schemas và mappings.
+    - `persistence/`: Xử lý lưu trữ dữ liệu, ở đây sử dụng MongoDB với schemas, mappings và interfaces persistence.
+    - `provider/`: Các nhà cung cấp dịch vụ bên ngoài như mã hóa bcrypt, xác thực OAuth2 (Facebook, Google).
   - **Presentation (Trình Bày)**: Xử lý giao diện người dùng và API.
     - `http/`: Xử lý các yêu cầu HTTP, bao gồm controllers để định tuyến và middlewares để xử lý trước/sau yêu cầu.
     - `websocket/`: Xử lý giao tiếp thời gian thực qua WebSocket, bao gồm handlers cho tin nhắn và mappings cho phòng.
 
-- **Shared (Chia Sẻ)**: Chứa các cấu hình và tiện ích dùng chung trên toàn bộ dự án, như cấu hình cơ sở dữ liệu và WebSocket, để tránh trùng lặp mã.
+- **Shared (Chia Sẻ)**: Chứa các cấu hình và tiện ích dùng chung trên toàn bộ dự án, như cấu hình cơ sở dữ liệu, WebSocket, DTO phản hồi cơ sở và tiện ích chuyển đổi enum, để tránh trùng lặp mã.
 
 - **Test**: Chứa các bài kiểm tra end-to-end và cấu hình Jest.
 
